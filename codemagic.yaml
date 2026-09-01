@@ -1,6 +1,6 @@
 workflows:
-  ios-release:
-    name: iOS TestFlight Build
+  ios-build:
+    name: iOS Build
     max_build_duration: 60
     instance_type: mac_mini_m2
     working_directory: flutter_app
@@ -9,11 +9,6 @@ workflows:
       flutter: 3.22.0
       xcode: latest
       cocoapods: default
-      vars:
-        BUNDLE_ID: "com.srilambo.vpn"
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.srilambo.vpn
 
     scripts:
       - name: Get Flutter packages
@@ -24,22 +19,15 @@ workflows:
           cd ios
           pod install
 
-      - name: Build iOS IPA
+      - name: Build iOS App
         script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+          flutter build ios --release --no-codesign
 
     artifacts:
-      - flutter_app/build/ios/ipa/*.ipa
+      - flutter_app/build/ios/iphoneos/*.app
+      - build/ios/iphoneos/*.app
 
-    publishing:
-      app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: true
-
-  android-release:
+  android-build:
     name: Android APK Build
     max_build_duration: 60
     instance_type: mac_mini_m2
@@ -52,8 +40,9 @@ workflows:
       - name: Get Flutter packages
         script: flutter pub get
 
-      - name: Build APK
+      - name: Build Android APK
         script: flutter build apk --release
 
     artifacts:
-      - flutter_app/build/app/outputs/flutter-apk/app-release.apk
+      - flutter_app/build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/flutter-apk/*.apk
