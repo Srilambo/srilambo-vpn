@@ -1,4 +1,4 @@
-package com.srilambo.srilambo_vpn
+package com.srilambo.vpn
 
 import io.flutter.embedding.android.FlutterActivity
 
